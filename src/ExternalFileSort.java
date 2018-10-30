@@ -7,16 +7,20 @@ public class ExternalFileSort {
 
 
     public static void main(String[] args) {
-        String path = "/home/pumbaa/tmpDir/test2/";
-        String fileName = "sourcedata_test1.txt";
+        externalSort();
+    }
+
+    static void externalSort() {
+        String path = "/home/pumbaa/tmpDir/test3/";
+        String fileName = "sourcedata_test3.txt";
 
         int fileNum = 3;
 
         //1000,0000=109M
-        int numCoun = 300000000;
+        int numCoun = 11;
 
-       FileGen fileGen = new FileGen();
-       fileGen.genFile(path + fileName, numCoun);
+        FileGen fileGen = new FileGen();
+        fileGen.genFile(path + fileName, numCoun);
 
         CutFileUtil cutFileUtil = new CutFileUtil();
         try {
@@ -28,14 +32,21 @@ public class ExternalFileSort {
         ArrayList<String> filesName = cutFileUtil.getFilesName();
 
         for (int i = 0; i < filesName.size(); i++) {
-            InternalFileSort inFile = new InternalFileSort();
+//            InternalFileSort inFile = new InternalFileSort();
+
+            InternalFileSort2 inFile = new InternalFileSort2();
+
             String filePath = filesName.get(i);
 
             System.out.println("sorted filePath: " + filePath);
 
-            inFile.readFileToArrayList(filePath);
-            inFile.sortArryList();
-            inFile.writeArrayListToFile(filePath);
+//            inFile.readFileToArrayList(filePath);
+//            inFile.sortArryList();
+//            inFile.writeArrayListToFile(filePath);
+
+            inFile.readFileToTreeSet(filePath);
+            inFile.writeTreeSetToFile(filePath);
+
         }
 
         System.out.println("filesName's size: " + filesName);
@@ -46,7 +57,6 @@ public class ExternalFileSort {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     //get minimum value's index
@@ -101,7 +111,7 @@ public class ExternalFileSort {
         int everyTurnFound = 0;
         boolean ISFIRST = true;
 
-        File result = new File("/home/pumbaa/tmpDir/test2/sorted_result.txt");
+        File result = new File("/home/pumbaa/tmpDir/test3/sorted_result.txt");
         FileOutputStream fileOutputStream = new FileOutputStream(result);
         OutputStreamWriter outputStream = new OutputStreamWriter(fileOutputStream);
         BufferedWriter bufferedWriter = new BufferedWriter(outputStream);
@@ -112,8 +122,6 @@ public class ExternalFileSort {
                     BufferedReader br = k_readers.get(k);
                     String line = null;
                     System.out.println("load value~!: " + k);
-
-
 
                     if ((line = br.readLine()) != null) {
                         k_values.put(k, line);
@@ -126,14 +134,9 @@ public class ExternalFileSort {
                 ISFIRST = false;
             } else {
 
-
-
                 BufferedReader br = k_readers.get(everyTurnFound);
 
                 String line = k_values.get(everyTurnFound);
-
-//                System.out.println("result line: " + line);
-
 
                 //result~!
                 bufferedWriter.write(line + "\n");
